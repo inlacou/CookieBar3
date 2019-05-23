@@ -8,7 +8,6 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import org.aviran.cookiebar2.CookieBar;
-import org.aviran.cookiebar2.OnActionClickListener;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -21,7 +20,7 @@ public class MainActivity extends AppCompatActivity {
         btnTop.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                CookieBar.build(MainActivity.this)
+                CookieBar.Companion.build(MainActivity.this)
                         .setTitle(R.string.top_cookie_title)
                         .setTitleColor(R.color.yellow)
                         .setMessage(R.string.top_cookie_message)
@@ -35,21 +34,13 @@ public class MainActivity extends AppCompatActivity {
         btnBottom.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                CookieBar.build(MainActivity.this)
+                CookieBar.Companion.build(MainActivity.this)
                         .setDuration(5000)
                         .setTitle(R.string.bottom_cookie_title)
                         .setIcon(R.mipmap.ic_launcher)
                         .setMessage(R.string.bottom_cookie_message)
-                        .setBackgroundColor(R.color.colorPrimary)
-                        .setActionColor(R.color.yellow)
                         .setTitleColor(R.color.yellow)
-                        .setCookiePosition(CookieBar.BOTTOM)
-                        .setAction(R.string.cookie_action, new OnActionClickListener() {
-                            @Override
-                            public void onClick() {
-                                Toast.makeText(getApplicationContext(), "Action Engaged!", Toast.LENGTH_LONG).show();
-                            }
-                        })
+                        .setCookiePosition(CookieBar.Companion.getBOTTOM())
                         .show();
             }
         });
@@ -59,12 +50,11 @@ public class MainActivity extends AppCompatActivity {
         btnCustomAnimation.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                CookieBar.build(MainActivity.this)
+                CookieBar.Companion.build(MainActivity.this)
                         .setTitle(R.string.custom_anim_cookie_title)
                         .setMessage(R.string.custom_anim_cookie_message)
                         .setIcon(R.drawable.ic_android_white_48dp)
                         .setMessageColor(R.color.liteblue)
-                        .setBackgroundColor(R.color.orange)
                         .setDuration(5000)
                         .setAnimationIn(android.R.anim.slide_in_left, android.R.anim.slide_in_left)
                         .setAnimationOut(android.R.anim.slide_out_right, android.R.anim.slide_out_right)
@@ -77,23 +67,15 @@ public class MainActivity extends AppCompatActivity {
         btnBottomAnimated.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                CookieBar.build(MainActivity.this)
+                CookieBar.Companion.build(MainActivity.this)
                         .setTitle(R.string.fancy_cookie_title)
                         .setMessage(R.string.fancy_cookie_message)
                         .setIcon(R.drawable.ic_settings_white_48dp)
                         .setIconAnimation(R.animator.iconspin)
                         .setTitleColor(R.color.fancyTitle)
-                        .setActionColor(R.color.fancyAction)
                         .setMessageColor(R.color.fancyMessage)
-                        .setBackgroundColor(R.color.fancyBackground)
                         .setDuration(5000)
                         .setLayoutGravity(Gravity.BOTTOM)
-                        .setAction("OPEN SETTINGS", new OnActionClickListener() {
-                            @Override
-                            public void onClick() {
-                                Toast.makeText(getApplicationContext(), "Action Engaged!", Toast.LENGTH_LONG).show();
-                            }
-                        })
                         .show();
             }
         });
@@ -104,41 +86,11 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-                CookieBar.build(MainActivity.this)
+                CookieBar.Companion.build(MainActivity.this)
                         .setCustomView(R.layout.custom_cookie)
-                        .setCustomViewInitializer(new CookieBar.CustomViewInitializer() {
-                            @Override
-                            public void initView(View view) {
-
-                                Button btnNew = view.findViewById(R.id.custom_cookie_btn_new);
-                                Button btnOpen = view.findViewById(R.id.custom_cookie_btn_open);
-                                Button btnSave = view.findViewById(R.id.custom_cookie_btn_save);
-
-                                View.OnClickListener btnListener = new View.OnClickListener() {
-
-                                    @Override
-                                    public void onClick(View view) {
-                                        Button button = (Button) view;
-                                        button.setText(R.string.clicked);
-                                    }
-                                };
-
-                                btnNew.setOnClickListener(btnListener);
-                                btnOpen.setOnClickListener(btnListener);
-                                btnSave.setOnClickListener(btnListener);
-                            }
-                        })
-                        .setAction("Close", new OnActionClickListener() {
-                            @Override
-                            public void onClick() {
-                                CookieBar.dismiss(MainActivity.this);
-                            }
-                        })
                         .setTitle(R.string.custom_view_cookie_title)
                         .setMessage(R.string.custom_view_cookie_message)
-                        .setEnableAutoDismiss(false)
-                        .setSwipeToDismiss(false)
-                        .setCookiePosition(Gravity.BOTTOM)
+                        .setCookiePosition(Gravity.TOP)
                         .show();
                 }
         });
@@ -146,7 +98,7 @@ public class MainActivity extends AppCompatActivity {
         findViewById(R.id.activity_main).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                CookieBar.dismiss(MainActivity.this);
+                CookieBar.Companion.dismiss(MainActivity.this);
             }
         });
 
