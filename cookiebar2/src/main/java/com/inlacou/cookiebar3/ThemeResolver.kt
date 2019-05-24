@@ -1,4 +1,4 @@
-package org.aviran.cookiebar2
+package com.inlacou.cookiebar3
 
 import android.content.Context
 import android.content.res.TypedArray
@@ -24,5 +24,4 @@ internal object ThemeResolver {
             a.recycle()
         }
     }
-
 }

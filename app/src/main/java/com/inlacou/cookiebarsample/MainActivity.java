@@ -1,13 +1,12 @@
-package org.aviran.cookiebarsample;
+package com.inlacou.cookiebarsample;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
-import android.widget.Toast;
 
-import org.aviran.cookiebar2.CookieBar;
+import com.inlacou.cookiebar3.CookieBar;
 
 public class MainActivity extends AppCompatActivity {
 

@@ -1,4 +1,4 @@
-package org.aviran.cookiebar2
+package com.inlacou.cookiebar3
 
 import android.animation.Animator
 import android.content.Context
@@ -75,19 +75,10 @@ internal class Cookie @JvmOverloads constructor(context: Context, attrs: Attribu
         tvMessage = findViewById(R.id.tv_message)
         ivIcon = findViewById(R.id.iv_icon)
 
-        validateLayoutIntegrity()
-        initDefaultStyle(context)
+        //validateLayoutIntegrity()
+        //initDefaultStyle(context)
         layoutCookie?.setOnTouchListener(this)
     }
-
-    private fun validateLayoutIntegrity() {
-        if (layoutCookie == null || tvTitle == null || tvMessage == null ||
-                ivIcon == null) {
-
-            throw RuntimeException("Your custom cookie view is missing one of the default required views")
-        }
-    }
-
 
     /**
      * Init the default text color or background color. You can change the default style by set the
@@ -126,14 +117,13 @@ internal class Cookie @JvmOverloads constructor(context: Context, attrs: Attribu
         isSwipeable = params.enableSwipeToDismiss
         isAutoDismissEnabled = params.enableAutoDismiss
 
-
         //Icon
         if (params.iconResId != 0) {
             ivIcon?.visibility = View.VISIBLE
             ivIcon?.setBackgroundResource(params.iconResId)
-            if (params.iconAnimator != null) {
-                params.iconAnimator.setTarget(ivIcon)
-                params.iconAnimator.start()
+            params.iconAnimator?.apply {
+                setTarget(ivIcon)
+                start()
             }
         }
 
@@ -157,12 +147,6 @@ internal class Cookie @JvmOverloads constructor(context: Context, attrs: Attribu
             setDefaultTextSize(tvMessage, R.attr.cookieMessageSize)
         }
 
-        //Background
-        if (params.backgroundColor != 0) {
-            layoutCookie?
-                    .setBackgroundColor(ContextCompat.getColor(context, params.backgroundColor))
-        }
-
         val defaultPadding = context.resources.getDimensionPixelSize(R.dimen.default_padding)
         val padding = ThemeResolver.getDimen(context, R.attr.cookiePadding, defaultPadding)
 
@@ -174,10 +158,10 @@ internal class Cookie @JvmOverloads constructor(context: Context, attrs: Attribu
         createOutAnim()
     }
 
-    private fun setDefaultTextSize(textView: TextView, @AttrRes attr: Int) {
+    private fun setDefaultTextSize(textView: TextView?, @AttrRes attr: Int) {
         val size = ThemeResolver.getDimen(context, attr, 0).toFloat()
         if (size > 0) {
-            textView.setTextSize(TypedValue.COMPLEX_UNIT_PX, size)
+            textView?.setTextSize(TypedValue.COMPLEX_UNIT_PX, size)
         }
     }
 
@@ -186,7 +170,7 @@ internal class Cookie @JvmOverloads constructor(context: Context, attrs: Attribu
         dismissOffsetThreshold = viewWidth / 3
 
         if (layoutGravity == Gravity.TOP) {
-            super.onLayout(changed, l, 0, r, layoutCookie?.measuredHeight)
+            super.onLayout(changed, l, 0, r, layoutCookie?.measuredHeight ?: 0)
         } else {
             super.onLayout(changed, l, t, r, b)
         }

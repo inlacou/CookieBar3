@@ -5,7 +5,7 @@ CookieBar 2
 CookieBar is a lightweight library for showing a brief message at the top or bottom of the screen.<br/><br/>
 
 ```gradle
-implementation 'org.aviran.cookiebar2:cookiebar2:1.1.2'
+implementation 'com.inlacou.cookiebar3:cookiebar2:1.1.2'
 ```
 
 ## Screenshot

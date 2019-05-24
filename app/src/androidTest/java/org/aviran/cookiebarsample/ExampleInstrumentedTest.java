@@ -1,4 +1,4 @@
-package org.aviran.cookiebarsample;
+package com.inlacou.cookiebarsample;
 
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;
@@ -21,6 +21,6 @@ public class ExampleInstrumentedTest {
         // Context of the app under test.
         Context appContext = InstrumentationRegistry.getTargetContext();
 
-        assertEquals("org.aviran.cookiebarsample", appContext.getPackageName());
+        assertEquals("com.inlacou.cookiebarsample", appContext.getPackageName());
     }
 }

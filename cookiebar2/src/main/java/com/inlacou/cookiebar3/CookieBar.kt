@@ -1,4 +1,4 @@
-package org.aviran.cookiebar2
+package com.inlacou.cookiebar3
 
 import android.animation.AnimatorInflater
 import android.animation.AnimatorSet
@@ -28,9 +28,6 @@ class CookieBar private constructor(private val context: Activity, params: Param
 
     private var cookieView: Cookie? = null
 
-    val view: View?
-        get() = cookieView
-
     init {
         if (params == null) {
             // since params is null, this CookieBar object can only be used to dismiss
@@ -43,15 +40,15 @@ class CookieBar private constructor(private val context: Activity, params: Param
     }
 
     private fun show() {
-        if (cookieView != null) {
+        cookieView?.let { cookie ->
             val decorView = context.window.decorView as ViewGroup
             val content = decorView.findViewById<ViewGroup>(android.R.id.content)
-            if (cookieView?.parent == null) {
-                val parent = if (cookieView?.layoutGravity == Gravity.BOTTOM)
+            if (cookie.parent == null) {
+                val parent = if (cookie.layoutGravity==Gravity.BOTTOM)
                     content
                 else
                     decorView
-                addCookie(parent, cookieView)
+                addCookie(parent, cookie)
             }
         }
     }

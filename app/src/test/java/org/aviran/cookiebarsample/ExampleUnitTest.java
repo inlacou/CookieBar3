@@ -1,4 +1,4 @@
-package org.aviran.cookiebarsample;
+package com.inlacou.cookiebarsample;
 
 import org.junit.Test;
 

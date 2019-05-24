@@ -7,7 +7,7 @@
     android:layout_height="wrap_content"
     android:layout_gravity="bottom"
     android:layout_marginTop="60dp"
-    android:background="#0000"
+    android:background="@color/default_bg_color"
     android:gravity="center_vertical"
     android:orientation="vertical"
     android:padding="16dp">
@@ -15,8 +15,6 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="16dp"
-        android:background="@drawable/dialog_back"
         android:orientation="horizontal">
 
         <ImageView
@@ -40,7 +38,7 @@
                 android:id="@+id/tv_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="@android:color/white"
+                android:textColor="@color/default_title_color"
                 android:textSize="18sp"
                 android:textStyle="bold"
                 android:visibility="gone"
@@ -52,7 +50,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
-                android:textColor="@android:color/white"
+                android:textColor="@color/default_message_color"
                 android:textSize="14sp"
                 android:visibility="gone"
                 tools:visibility="visible"
