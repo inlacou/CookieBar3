@@ -1,15 +1,15 @@
-[![Android Arsenal](https://img.shields.io/badge/Android%20Arsenal-CookieBar2-brightgreen.svg?style=flat)](https://android-arsenal.com/details/1/6122) [![Codacy Badge](https://api.codacy.com/project/badge/Grade/6474fc01133444e0b6f615d9b1af8589)](https://www.codacy.com/app/AviranAbady/CookieBar2?utm_source=github.com&utm_medium=referral&utm_content=AviranAbady/CookieBar2&utm_campaign=badger) [![AndroidWeekly335](https://raw.githubusercontent.com/AviranAbady/storage/master/AndroidWeekly335.png)](http://androidweekly.net/issues/issue-335)
+[![Android Arsenal](https://img.shields.io/badge/Android%20Arsenal-CookieBar3-brightgreen.svg?style=flat)](https://android-arsenal.com/details/1/6122) [![Codacy Badge](https://api.codacy.com/project/badge/Grade/6474fc01133444e0b6f615d9b1af8589)](https://www.codacy.com/app/AviranAbady/cookiebar3?utm_source=github.com&utm_medium=referral&utm_content=AviranAbady/cookiebar3&utm_campaign=badger) [![AndroidWeekly335](https://raw.githubusercontent.com/AviranAbady/storage/master/AndroidWeekly335.png)](http://androidweekly.net/issues/issue-335)
 
 CookieBar 2
 ===============
 CookieBar is a lightweight library for showing a brief message at the top or bottom of the screen.<br/><br/>
 
 ```gradle
-implementation 'com.inlacou.cookiebar3:cookiebar2:1.1.2'
+implementation 'com.inlacou.cookiebar3:cookiebar3:1.1.2'
 ```
 
 ## Screenshot
-<img src="https://raw.githubusercontent.com/AviranAbady/storage/master/cookiebar2_1.1.0.gif">
+<img src="https://raw.githubusercontent.com/AviranAbady/storage/master/cookiebar3_1.1.0.gif">
 
 Main differences from the original Cookiebar library are:
 

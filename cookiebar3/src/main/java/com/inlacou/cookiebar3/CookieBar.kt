@@ -159,7 +159,7 @@ class CookieBar private constructor(private val context: Activity, params: Param
          * @param layoutGravity Cookie position, use either CookieBar.TOP or CookieBar.BOTTOM
          * @return builder
          */
-        @Deprecated("As of CookieBar2 1.1.0, use\n" +
+        @Deprecated("As of cookiebar3 1.1.0, use\n" +
                 "                      {@link #setCookiePosition(int)} instead.\n" +
                 "\n" +
                 "          ")
