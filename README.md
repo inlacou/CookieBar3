@@ -1,6 +1,6 @@
 [![Android Arsenal](https://img.shields.io/badge/Android%20Arsenal-CookieBar3-brightgreen.svg?style=flat)](https://android-arsenal.com/details/1/6122) [![Codacy Badge](https://api.codacy.com/project/badge/Grade/6474fc01133444e0b6f615d9b1af8589)](https://www.codacy.com/app/AviranAbady/cookiebar3?utm_source=github.com&utm_medium=referral&utm_content=AviranAbady/cookiebar3&utm_campaign=badger) [![AndroidWeekly335](https://raw.githubusercontent.com/AviranAbady/storage/master/AndroidWeekly335.png)](http://androidweekly.net/issues/issue-335)
 
-CookieBar 2
+CookieBar 3
 ===============
 CookieBar is a lightweight library for showing a brief message at the top or bottom of the screen.<br/><br/>
 
@@ -147,11 +147,11 @@ CookieBar.build(MainActivity.this)
  * View layout
 
 ## Attribution
-Forked from the early code base of CookieBar, by Eric Liu.
+Forked from the early code base of CookieBar, by Aviran Abady.
 
 ## License
 
-    Copyright 2018, Aviran Abady.
+    Copyright 2019, Iñigo Lacoume.
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
