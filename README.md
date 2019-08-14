@@ -4,10 +4,6 @@ CookieBar 3
 ===============
 CookieBar is a lightweight library for showing a brief message at the top or bottom of the screen.<br/><br/>
 
-```gradle
-implementation 'com.inlacou.cookiebar3:cookiebar3:1.1.2'
-```
-
 ## Screenshot
 <img src="https://raw.githubusercontent.com/AviranAbady/storage/master/cookiebar3_1.1.0.gif">
 
@@ -147,7 +143,7 @@ CookieBar.build(MainActivity.this)
  * View layout
 
 ## Attribution
-Forked from the early code base of CookieBar, by Aviran Abady.
+Forked from the early code base of CookieBar2, by Aviran Abady.
 
 ## License
 
