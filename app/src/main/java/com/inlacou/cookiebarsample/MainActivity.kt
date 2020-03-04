@@ -6,6 +6,7 @@ import android.util.Log
 import android.view.Gravity
 import android.view.View
 import android.widget.Button
+import com.inlacou.cookiebar3.CookieAnimation
 import com.inlacou.cookiebar3.CookieBar.Companion.BOTTOM
 import com.inlacou.cookiebar3.CookieBar.Companion.build
 import com.inlacou.cookiebar3.CookieBar.Companion.dismiss
@@ -43,8 +44,8 @@ class MainActivity : AppCompatActivity() {
 					.setIcon(R.drawable.ic_android_white_48dp)
 					.setMessageColor(R.color.liteblue)
 					.setDuration(5000)
-					.setAnimationIn(android.R.anim.slide_in_left, android.R.anim.slide_in_left)
-					.setAnimationOut(android.R.anim.slide_out_right, android.R.anim.slide_out_right)
+					.setAnimationIn(CookieAnimation(android.R.anim.slide_in_left), CookieAnimation(android.R.anim.slide_in_left))
+					.setAnimationOut(CookieAnimation(android.R.anim.slide_out_right), CookieAnimation(android.R.anim.slide_out_right))
 					.show()
 		}
 		val btnBottomAnimated = findViewById<Button>(R.id.btn_bottom_animated)
@@ -57,7 +58,7 @@ class MainActivity : AppCompatActivity() {
 					.setTitleColor(R.color.fancyTitle)
 					.setMessageColor(R.color.fancyMessage)
 					.setDuration(5000)
-					.setLayoutGravity(Gravity.BOTTOM)
+					.setCookiePosition(BOTTOM)
 					.show()
 		}
 		val btnCustomView = findViewById<Button>(R.id.btn_custom_view)
@@ -67,7 +68,7 @@ class MainActivity : AppCompatActivity() {
 					.setTitle("This is a custom cookie")
 					.setMessage("Fancy, isn't it?")
 					.setIcon(R.drawable.cookiemonster)
-					.setCookiePosition(Gravity.BOTTOM)
+					.setCookiePosition(BOTTOM)
 					.setDuration(3000)
 					.setShownListener { Log.d("example_activity", "cookie shown") }
 					.setDismissListener { Log.d("example_activity", "cookie dismissed") }

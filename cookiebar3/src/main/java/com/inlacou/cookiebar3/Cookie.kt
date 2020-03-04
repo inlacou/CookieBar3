@@ -1,6 +1,7 @@
 package com.inlacou.cookiebar3
 
 import android.animation.Animator
+import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Color
 import android.support.annotation.AttrRes
@@ -20,8 +21,9 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 
-internal class Cookie @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null,
-                                                defStyleAttr: Int = 0) : LinearLayout(context, attrs, defStyleAttr), View.OnTouchListener {
+internal class Cookie @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0)
+    : LinearLayout(context, attrs, defStyleAttr), View.OnTouchListener {
+    
     private var slideOutAnimation: Animation? = null
     private var layoutCookie: ViewGroup? = null
     private var tvTitle: TextView? = null
@@ -34,25 +36,23 @@ internal class Cookie @JvmOverloads constructor(context: Context, attrs: Attribu
     private var dismissOffsetThreshold: Float = 0.toFloat()
     private var viewWidth: Float = 0.toFloat()
     private var swipedOut: Boolean = false
-    private var animationInTop: Int = 0
-    private var animationInBottom: Int = 0
-    private var animationOutTop: Int = 0
-    private var animationOutBottom: Int = 0
+    private var animationInTop: CookieAnimation = CookieAnimation(0)
+    private var animationInBottom: CookieAnimation = CookieAnimation(0)
+    private var animationOutTop: CookieAnimation = CookieAnimation(0)
+    private var animationOutBottom: CookieAnimation = CookieAnimation(0)
     private var isAutoDismissEnabled: Boolean = false
     private var isSwipeable: Boolean = false
     private var shownListener: (() -> Unit)? = null
     private var dismissListener: (() -> Unit)? = null
-
+    
+    /**
+     * Used for swipe out animation
+     */
     private val destroyListener: Animator.AnimatorListener
         get() = object : Animator.AnimatorListener {
             override fun onAnimationStart(animation: Animator) {}
-
-            override fun onAnimationEnd(animation: Animator) {
-                removeFromParent()
-            }
-
+            override fun onAnimationEnd(animation: Animator) { removeFromParent() }
             override fun onAnimationCancel(animation: Animator) {}
-
             override fun onAnimationRepeat(animation: Animator) {}
         }
 
@@ -65,45 +65,22 @@ internal class Cookie @JvmOverloads constructor(context: Context, attrs: Attribu
         }
 
         if (getChildAt(0).layoutParams is LayoutParams) {
-            val lp = getChildAt(0).layoutParams as LayoutParams
-            lp.gravity = Gravity.BOTTOM
+            (getChildAt(0).layoutParams as LayoutParams).gravity = Gravity.BOTTOM
         }
 
         layoutCookie = findViewById(R.id.cookie)
         tvTitle = findViewById(R.id.tv_title)
         tvMessage = findViewById(R.id.tv_message)
         ivIcon = findViewById(R.id.iv_icon)
-
-        //validateLayoutIntegrity()
-        //initDefaultStyle(context)
+        
+        setListeners()
+    }
+    
+    @SuppressLint("ClickableViewAccessibility")
+    private fun setListeners() {
         layoutCookie?.setOnTouchListener(this)
     }
-
-    /**
-     * Init the default text color or background color. You can change the default style by set the
-     * Theme's attributes.
-     *
-     *
-     * <pre>
-     * <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
-    <item name="cookieTitleColor">@color/default_title_color</item>
-    <item name="cookieMessageColor">@color/default_message_color</item>
-    <item name="cookieActionColor">@color/default_action_color</item>
-    <item name="cookieBackgroundColor">@color/default_bg_color</item>
-    </style>
-    </pre> *
-     */
-    private fun initDefaultStyle(context: Context) {
-        val titleColor = ThemeResolver.getColor(context, R.attr.cookieTitleColor, Color.WHITE)
-        val messageColor = ThemeResolver.getColor(context, R.attr.cookieMessageColor, Color.WHITE)
-        val backgroundColor = ThemeResolver.getColor(context, R.attr.cookieBackgroundColor,
-                ContextCompat.getColor(context, R.color.default_bg_color))
-
-        tvTitle?.setTextColor(titleColor)
-        tvMessage?.setTextColor(messageColor)
-        layoutCookie?.setBackgroundColor(backgroundColor)
-    }
-
+    
     fun setParams(params: CookieBar.Params) {
         initViews(params.customViewResource, params.viewInitializer)
 
@@ -178,33 +155,27 @@ internal class Cookie @JvmOverloads constructor(context: Context, attrs: Attribu
     }
 
     private fun createInAnim() {
-        val animationResId = if (layoutGravity == Gravity.BOTTOM) animationInBottom else animationInTop
-        val slideInAnimation = AnimationUtils.loadAnimation(context, animationResId)
-        slideInAnimation.setAnimationListener(object : Animation.AnimationListener {
-            override fun onAnimationStart(animation: Animation) {
-                // no implementation
-            }
-
-            override fun onAnimationEnd(animation: Animation) {
-                shownListener?.invoke()
-                if (!isAutoDismissEnabled) {
-                    return
+        val currentAnimation = if(layoutGravity==Gravity.BOTTOM) animationInBottom else animationInTop
+        animation = AnimationUtils.loadAnimation(context, currentAnimation.animationId).apply {
+            currentAnimation.duration?.let { duration = it }
+            setAnimationListener(object : Animation.AnimationListener {
+                override fun onAnimationEnd(animation: Animation) {
+                    shownListener?.invoke()
+                    if (!isAutoDismissEnabled) return
+            
+                    postDelayed({ dismiss() }, this@Cookie.duration)
                 }
-
-                postDelayed({ dismiss() }, duration)
-            }
-
-            override fun onAnimationRepeat(animation: Animation) {
-                // no implementation
-            }
-        })
-
-        animation = slideInAnimation
+                override fun onAnimationStart(animation: Animation) {}
+                override fun onAnimationRepeat(animation: Animation) {}
+            })
+        }
     }
 
     private fun createOutAnim() {
-        val animationResId = if (layoutGravity == Gravity.BOTTOM) animationOutBottom else animationOutTop
-        slideOutAnimation = AnimationUtils.loadAnimation(context, animationResId)
+        val currentAnimation = if(layoutGravity==Gravity.BOTTOM) animationOutBottom else animationOutTop
+        slideOutAnimation = AnimationUtils.loadAnimation(context, currentAnimation.animationId).apply {
+            currentAnimation.duration?.let { duration = it }
+        }
     }
 
     @JvmOverloads
@@ -215,19 +186,13 @@ internal class Cookie @JvmOverloads constructor(context: Context, attrs: Attribu
         }
 
         slideOutAnimation?.setAnimationListener(object : Animation.AnimationListener {
-            override fun onAnimationStart(animation: Animation) {
-                // no implementation
-            }
-
             override fun onAnimationEnd(animation: Animation) {
                 listener?.invoke()
                 visibility = View.GONE
                 removeFromParent()
             }
-
-            override fun onAnimationRepeat(animation: Animation) {
-                // no implementation
-            }
+            override fun onAnimationStart(animation: Animation) {}
+            override fun onAnimationRepeat(animation: Animation) {}
         })
 
         startAnimation(slideOutAnimation)

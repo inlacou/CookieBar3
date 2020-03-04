@@ -16,13 +16,6 @@ import android.view.ViewGroup
 /**
  * CookieBar is a lightweight library for showing a brief message at the top or bottom of the
  * screen.
- *
- *
- * CookieBar
- * .build(MainActivity.this)
- * .setTitle("TITLE")
- * .setMessage("MESSAGE")
- * .show();
  */
 class CookieBar private constructor(private val context: Activity, params: Params?) {
 
@@ -46,7 +39,7 @@ class CookieBar private constructor(private val context: Activity, params: Param
                 val parent =
                         if (cookie.layoutGravity==Gravity.BOTTOM) decorView.findViewById(android.R.id.content)
                         else decorView
-                addCookie(parent, cookie)
+                addCookieAndReplacePresent(parent, cookie)
             }
         }
     }
@@ -70,12 +63,13 @@ class CookieBar private constructor(private val context: Activity, params: Param
         }
 
     }
-
-    private fun addCookie(parent: ViewGroup, cookie: Cookie) {
-        if (cookie.parent != null) {
-            return
-        }
-
+    
+    /**
+     * Adds a cookie and removes previous cookies on the same position (TOP or BOTTOM).
+     */
+    private fun addCookieAndReplacePresent(parent: ViewGroup, cookie: Cookie) {
+        if (cookie.parent != null) return
+        
         // if exists, remove existing cookie
         val childCount = parent.childCount
         for (i in 0 until childCount) {
@@ -89,11 +83,7 @@ class CookieBar private constructor(private val context: Activity, params: Param
         parent.addView(cookie)
     }
 
-    class Builder
-    /**
-     * Create a builder for an cookie.
-     */
-    internal constructor(private val context: Activity) {
+    class Builder internal constructor(private val context: Activity) {
 
         private val params = Params()
 
@@ -190,13 +180,13 @@ class CookieBar private constructor(private val context: Activity, params: Param
             return this
         }
 
-        fun setAnimationIn(@AnimRes topAnimation: Int, @AnimRes bottomAnimation: Int): Builder {
+        fun setAnimationIn(topAnimation: CookieAnimation, bottomAnimation: CookieAnimation): Builder {
             params.animationInTop = topAnimation
             params.animationInBottom = bottomAnimation
             return this
         }
 
-        fun setAnimationOut(@AnimRes topAnimation: Int, @AnimRes bottomAnimation: Int): Builder {
+        fun setAnimationOut(topAnimation: CookieAnimation, bottomAnimation: CookieAnimation): Builder {
             params.animationOutTop = topAnimation
             params.animationOutBottom = bottomAnimation
             return this
@@ -232,8 +222,6 @@ class CookieBar private constructor(private val context: Activity, params: Param
             cookie.show()
             return cookie
         }
-
-
     }
 
     internal class Params {
@@ -248,10 +236,10 @@ class CookieBar private constructor(private val context: Activity, params: Param
         var duration: Long = 2000
         var cookiePosition = Gravity.TOP
         var customViewResource: Int = 0
-        var animationInTop = R.anim.slide_in_from_top
-        var animationInBottom = R.anim.slide_in_from_bottom
-        var animationOutTop = R.anim.slide_out_to_top
-        var animationOutBottom = R.anim.slide_out_to_bottom
+        var animationInTop = CookieAnimation(R.anim.slide_in_from_top)
+        var animationInBottom = CookieAnimation(R.anim.slide_in_from_bottom)
+        var animationOutTop = CookieAnimation(R.anim.slide_out_to_top)
+        var animationOutBottom = CookieAnimation(R.anim.slide_out_to_bottom)
         var viewInitializer: CustomViewInitializer? = null
         var iconAnimator: AnimatorSet? = null
         var dismissListener: (() -> Unit)? = null
@@ -263,11 +251,14 @@ class CookieBar private constructor(private val context: Activity, params: Param
     }
 
     companion object {
-        val TOP = Gravity.TOP
-        val BOTTOM = Gravity.BOTTOM
+        /**
+         * Default cookie position
+         */
+        const val TOP = Gravity.TOP
+        const val BOTTOM = Gravity.BOTTOM
 
         fun build(activity: Activity): Builder {
-            return CookieBar.Builder(activity)
+            return Builder(activity)
         }
 
         fun dismiss(activity: Activity) {

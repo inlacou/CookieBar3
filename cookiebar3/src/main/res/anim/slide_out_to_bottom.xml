@@ -5,7 +5,7 @@
     android:interpolator="@anim/interpolator_slight_anticipate">
 
     <translate
-        android:fromYDelta="0%"
+        android:fromYDelta="10%"
         android:toYDelta="100%" />
 
 </set>
