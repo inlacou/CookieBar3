@@ -42,12 +42,10 @@ class CookieBar private constructor(private val context: Activity, params: Param
     private fun show() {
         cookieView?.let { cookie ->
             val decorView = context.window.decorView as ViewGroup
-            val content = decorView.findViewById<ViewGroup>(android.R.id.content)
             if (cookie.parent == null) {
-                val parent = if (cookie.layoutGravity==Gravity.BOTTOM)
-                    content
-                else
-                    decorView
+                val parent =
+                        if (cookie.layoutGravity==Gravity.BOTTOM) decorView.findViewById(android.R.id.content)
+                        else decorView
                 addCookie(parent, cookie)
             }
         }
@@ -83,11 +81,7 @@ class CookieBar private constructor(private val context: Activity, params: Param
         for (i in 0 until childCount) {
             val child = parent.getChildAt(i)
             if (child is Cookie) {
-                child.dismiss(object : Cookie.CookieBarDismissListener {
-                    override fun onDismiss() {
-                        parent.addView(cookie)
-                    }
-                })
+                child.dismiss { parent.addView(cookie) }
                 return
             }
         }
@@ -127,7 +121,11 @@ class CookieBar private constructor(private val context: Activity, params: Param
             params.message = context.getString(resId)
             return this
         }
-
+    
+        /**
+         * Sets duration this cookie is visible. Total amount would be with in and out animations.
+         * So if you want the cookie to be "visible on place" for 3 seconds, you will have to set duration as 3000L.
+         */
         fun setDuration(duration: Long): Builder {
             params.duration = duration
             return this
@@ -159,10 +157,7 @@ class CookieBar private constructor(private val context: Activity, params: Param
          * @param layoutGravity Cookie position, use either CookieBar.TOP or CookieBar.BOTTOM
          * @return builder
          */
-        @Deprecated("As of cookiebar3 1.1.0, use\n" +
-                "                      {@link #setCookiePosition(int)} instead.\n" +
-                "\n" +
-                "          ")
+        @Deprecated("As of cookiebar3 1.1.0, use {@link #setCookiePosition(int)} instead.", ReplaceWith("@link setCookiePosition(layoutGravity)"))
         fun setLayoutGravity(layoutGravity: Int): Builder {
             return setCookiePosition(layoutGravity)
         }
@@ -213,6 +208,16 @@ class CookieBar private constructor(private val context: Activity, params: Param
             return this
         }
 
+        fun setShownListener(shownListener: (() -> Unit)): Builder {
+            params.shownListener = shownListener
+            return this
+        }
+
+        fun setDismissListener(dismissListener: (() -> Unit)): Builder {
+            params.dismissListener = dismissListener
+            return this
+        }
+
         fun create(): CookieBar {
             return CookieBar(context, params)
         }
@@ -244,6 +249,8 @@ class CookieBar private constructor(private val context: Activity, params: Param
         var animationOutBottom = R.anim.slide_out_to_bottom
         var viewInitializer: CustomViewInitializer? = null
         var iconAnimator: AnimatorSet? = null
+        var dismissListener: (() -> Unit)? = null
+        var shownListener: (() -> Unit)? = null
     }
 
     interface CustomViewInitializer {

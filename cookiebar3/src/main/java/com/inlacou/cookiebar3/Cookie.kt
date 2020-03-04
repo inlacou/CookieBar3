@@ -40,11 +40,10 @@ internal class Cookie @JvmOverloads constructor(context: Context, attrs: Attribu
     private var animationOutBottom: Int = 0
     private var isAutoDismissEnabled: Boolean = false
     private var isSwipeable: Boolean = false
+    private var shownListener: (() -> Unit)? = null
+    private var dismissListener: (() -> Unit)? = null
 
-    private// no implementation
-    // no implementation
-    // no implementation
-    val destroyListener: Animator.AnimatorListener
+    private val destroyListener: Animator.AnimatorListener
         get() = object : Animator.AnimatorListener {
             override fun onAnimationStart(animation: Animator) {}
 
@@ -65,8 +64,8 @@ internal class Cookie @JvmOverloads constructor(context: Context, attrs: Attribu
             View.inflate(context, R.layout.layout_cookie, this)
         }
 
-        if (getChildAt(0).layoutParams is LinearLayout.LayoutParams) {
-            val lp = getChildAt(0).layoutParams as LinearLayout.LayoutParams
+        if (getChildAt(0).layoutParams is LayoutParams) {
+            val lp = getChildAt(0).layoutParams as LayoutParams
             lp.gravity = Gravity.BOTTOM
         }
 
@@ -116,6 +115,8 @@ internal class Cookie @JvmOverloads constructor(context: Context, attrs: Attribu
         animationOutBottom = params.animationOutBottom
         isSwipeable = params.enableSwipeToDismiss
         isAutoDismissEnabled = params.enableAutoDismiss
+        shownListener = params.shownListener
+        dismissListener = params.dismissListener
 
         //Icon
         if (params.iconResId != 0) {
@@ -185,6 +186,7 @@ internal class Cookie @JvmOverloads constructor(context: Context, attrs: Attribu
             }
 
             override fun onAnimationEnd(animation: Animation) {
+                shownListener?.invoke()
                 if (!isAutoDismissEnabled) {
                     return
                 }
@@ -206,7 +208,7 @@ internal class Cookie @JvmOverloads constructor(context: Context, attrs: Attribu
     }
 
     @JvmOverloads
-    fun dismiss(listener: CookieBarDismissListener? = null) {
+    fun dismiss(listener: (() -> Unit)? = null) {
         if (swipedOut) {
             removeFromParent()
             return
@@ -218,7 +220,7 @@ internal class Cookie @JvmOverloads constructor(context: Context, attrs: Attribu
             }
 
             override fun onAnimationEnd(animation: Animation) {
-                listener?.onDismiss()
+                listener?.invoke()
                 visibility = View.GONE
                 removeFromParent()
             }
@@ -237,6 +239,7 @@ internal class Cookie @JvmOverloads constructor(context: Context, attrs: Attribu
             if (parent != null) {
                 this@Cookie.clearAnimation()
                 (parent as ViewGroup).removeView(this@Cookie)
+                dismissListener?.invoke()
             }
         }, 200)
     }
@@ -290,9 +293,5 @@ internal class Cookie @JvmOverloads constructor(context: Context, attrs: Attribu
 
             else -> return false
         }
-    }
-
-    interface CookieBarDismissListener {
-        fun onDismiss()
     }
 }
