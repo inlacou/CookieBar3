@@ -102,6 +102,11 @@ class CookieBar private constructor(private val context: Activity, params: Param
             return this
         }
 
+        fun maybeSetIcon(@DrawableRes iconResId: Int?): Builder {
+            if(iconResId!=null) params.iconResId = iconResId
+            return this
+        }
+
         fun setTitle(title: String): Builder {
             params.title = title
             return this

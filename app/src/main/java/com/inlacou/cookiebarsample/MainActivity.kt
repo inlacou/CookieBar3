@@ -66,6 +66,7 @@ class MainActivity : AppCompatActivity() {
 					.setCustomView(R.layout.custom_cookie)
 					.setTitle("This is a custom cookie")
 					.setMessage("Fancy, isn't it?")
+					.setIcon(R.drawable.cookiemonster)
 					.setCookiePosition(Gravity.BOTTOM)
 					.setDuration(3000)
 					.setShownListener { Log.d("example_activity", "cookie shown") }
