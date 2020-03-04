@@ -180,13 +180,13 @@ class CookieBar private constructor(private val context: Activity, params: Param
             return this
         }
 
-        fun setAnimationIn(topAnimation: CookieAnimation, bottomAnimation: CookieAnimation): Builder {
+        fun setAnimationIn(topAnimation: CookieStartAnimation, bottomAnimation: CookieStartAnimation): Builder {
             params.animationInTop = topAnimation
             params.animationInBottom = bottomAnimation
             return this
         }
 
-        fun setAnimationOut(topAnimation: CookieAnimation, bottomAnimation: CookieAnimation): Builder {
+        fun setAnimationOut(topAnimation: CookieEndAnimation, bottomAnimation: CookieEndAnimation): Builder {
             params.animationOutTop = topAnimation
             params.animationOutBottom = bottomAnimation
             return this
@@ -236,10 +236,10 @@ class CookieBar private constructor(private val context: Activity, params: Param
         var duration: Long = 2000
         var cookiePosition = Gravity.TOP
         var customViewResource: Int = 0
-        var animationInTop = CookieAnimation(R.anim.slide_in_from_top)
-        var animationInBottom = CookieAnimation(R.anim.slide_in_from_bottom)
-        var animationOutTop = CookieAnimation(R.anim.slide_out_to_top)
-        var animationOutBottom = CookieAnimation(R.anim.slide_out_to_bottom)
+        var animationInTop = CookieStartAnimation(R.anim.slide_in_from_top)
+        var animationInBottom = CookieStartAnimation(R.anim.slide_in_from_bottom)
+        var animationOutTop = CookieEndAnimation(R.anim.slide_out_to_top)
+        var animationOutBottom = CookieEndAnimation(R.anim.slide_out_to_bottom)
         var viewInitializer: CustomViewInitializer? = null
         var iconAnimator: AnimatorSet? = null
         var dismissListener: (() -> Unit)? = null

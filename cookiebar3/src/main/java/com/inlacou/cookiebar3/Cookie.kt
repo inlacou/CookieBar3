@@ -162,7 +162,6 @@ internal class Cookie @JvmOverloads constructor(context: Context, attrs: Attribu
                 override fun onAnimationEnd(animation: Animation) {
                     shownListener?.invoke()
                     if (!isAutoDismissEnabled) return
-            
                     postDelayed({ dismiss() }, this@Cookie.duration)
                 }
                 override fun onAnimationStart(animation: Animation) {}

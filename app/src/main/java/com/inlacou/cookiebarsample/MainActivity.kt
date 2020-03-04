@@ -10,6 +10,8 @@ import com.inlacou.cookiebar3.CookieAnimation
 import com.inlacou.cookiebar3.CookieBar.Companion.BOTTOM
 import com.inlacou.cookiebar3.CookieBar.Companion.build
 import com.inlacou.cookiebar3.CookieBar.Companion.dismiss
+import com.inlacou.cookiebar3.CookieEndAnimation
+import com.inlacou.cookiebar3.CookieStartAnimation
 
 class MainActivity : AppCompatActivity() {
 	override fun onCreate(savedInstanceState: Bundle?) {
@@ -44,8 +46,8 @@ class MainActivity : AppCompatActivity() {
 					.setIcon(R.drawable.ic_android_white_48dp)
 					.setMessageColor(R.color.liteblue)
 					.setDuration(5000)
-					.setAnimationIn(CookieAnimation(android.R.anim.slide_in_left), CookieAnimation(android.R.anim.slide_in_left))
-					.setAnimationOut(CookieAnimation(android.R.anim.slide_out_right), CookieAnimation(android.R.anim.slide_out_right))
+					.setAnimationIn(CookieStartAnimation(android.R.anim.slide_in_left), CookieStartAnimation(android.R.anim.slide_in_left))
+					.setAnimationOut(CookieEndAnimation(android.R.anim.slide_out_right), CookieEndAnimation(android.R.anim.slide_out_right))
 					.show()
 		}
 		val btnBottomAnimated = findViewById<Button>(R.id.btn_bottom_animated)
