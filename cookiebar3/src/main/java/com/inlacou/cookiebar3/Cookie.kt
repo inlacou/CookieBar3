@@ -90,18 +90,24 @@ internal class Cookie @JvmOverloads constructor(context: Context, attrs: Attribu
         layoutCookie!!.visibility = View.INVISIBLE
         steps.add(AnimationStep(0, null, 0, CookieAnimation({
             invisible()
-        })))
-        steps.add(AnimationStep(0, null, 0, CookieAnimation({
+        }), CookieAnimation({
+            textSize(36f)
+        }, target = R.id.tv_title)))
+        steps.add(AnimationStep(0, null, 0, listOf(CookieAnimation({
             visible()
             outOfScreen(Gravity.BOTTOM)
-        })))
+        }), CookieAnimation({
+            textSize(36f)
+        }, target = R.id.tv_title))))
         steps.add(AnimationStep(700, AccelerateDecelerateInterpolator(), 5000, CookieAnimation({
             centerInParent(horizontal = false, vertical = true)
         })))
         steps.add(AnimationStep(700, null, 3000, CookieAnimation({
             width(1159, keepRatio = true, toDp = true)
             bottomOfItsParent(60f)
-        })))
+        }), CookieAnimation({
+            textSize(30f)
+        }, target = R.id.tv_title)))
         steps.add(AnimationStep(700, null, 0, CookieAnimation({
             outOfScreen(Gravity.BOTTOM)
         })))
@@ -145,7 +151,7 @@ internal class Cookie @JvmOverloads constructor(context: Context, attrs: Attribu
         
         var auxSteps = listOf<PleaseAnim>()
         auxSteps = steps.flatMap {
-            if(it.holdOnPosition>0) listOf(it, AnimationStep(it.holdOnPosition, it.interpolator, 0, it.animations))
+            if(it.holdOnPosition>0) listOf(it, AnimationStep(duration = it.holdOnPosition, interpolator = it.interpolator, holdOnPosition = 0, animations = it.animations))
             else listOf(it)
         }.mapIndexed { index, step ->
             please(step.duration) {
