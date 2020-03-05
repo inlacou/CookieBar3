@@ -1,7 +1,11 @@
 package com.inlacou.cookiebar3
 
-import android.support.annotation.AnimRes
+import android.support.annotation.IdRes
+import android.view.animation.Interpolator
+import com.github.florent37.kotlin.pleaseanimate.core.Expectations
 
-open class CookieAnimation(@AnimRes val animationId: Int, val duration: Long? = null, val delayUntilNextStep: Long = 0)
-class CookieStartAnimation(@AnimRes animationId: Int, duration: Long? = null, waitUntilNextStep: Long = 2000): CookieAnimation(animationId, duration, waitUntilNextStep)
-class CookieEndAnimation(@AnimRes animationId: Int, duration: Long? = null): CookieAnimation(animationId, duration, 0)
+class AnimationStep(val duration: Long, val interpolator: Interpolator? = null, vararg val animations: CookieAnimation)
+
+open class CookieAnimation(val expectations: (Expectations.() -> Unit), @IdRes val target: Int? = null)
+class CookieStartAnimation(animation: (Expectations.() -> Unit)): CookieAnimation(animation)
+class CookieEndAnimation(animation: (Expectations.() -> Unit)): CookieAnimation(animation)

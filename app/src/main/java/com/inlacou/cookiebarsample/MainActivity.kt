@@ -46,8 +46,6 @@ class MainActivity : AppCompatActivity() {
 					.setIcon(R.drawable.ic_android_white_48dp)
 					.setMessageColor(R.color.liteblue)
 					.setDuration(5000)
-					.setAnimationIn(CookieStartAnimation(android.R.anim.slide_in_left), CookieStartAnimation(android.R.anim.slide_in_left))
-					.setAnimationOut(CookieEndAnimation(android.R.anim.slide_out_right), CookieEndAnimation(android.R.anim.slide_out_right))
 					.show()
 		}
 		val btnBottomAnimated = findViewById<Button>(R.id.btn_bottom_animated)

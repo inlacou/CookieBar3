@@ -3,6 +3,7 @@ package com.inlacou.cookiebar3
 import android.animation.Animator
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.res.Resources
 import android.support.annotation.AttrRes
 import android.support.annotation.LayoutRes
 import android.support.v4.content.ContextCompat
@@ -13,38 +14,35 @@ import android.view.Gravity
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.AccelerateDecelerateInterpolator
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
+import android.view.animation.BounceInterpolator
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
+import com.github.florent37.kotlin.pleaseanimate.PleaseAnim
+import com.github.florent37.kotlin.pleaseanimate.core.Expectations
 import com.github.florent37.kotlin.pleaseanimate.please
-import kotlinx.android.synthetic.main.layout_cookie.view.*
 
 internal class Cookie @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0)
     : LinearLayout(context, attrs, defStyleAttr), View.OnTouchListener {
     
-    private var slideOutAnimation: Animation? = null
     private var layoutCookie: ViewGroup? = null
-    private var layoutContent: ViewGroup? = null
     private var tvTitle: TextView? = null
     private var tvMessage: TextView? = null
     private var ivIcon: ImageView? = null
     var layoutGravity = Gravity.BOTTOM
-        private set
     private var initialDragX: Float = 0.toFloat()
     private var dismissOffsetThreshold: Float = 0.toFloat()
     private var viewWidth: Float = 0.toFloat()
     private var swipedOut: Boolean = false
-    private var animationInTop: CookieAnimation = CookieAnimation(0)
-    private var animationInBottom: CookieAnimation = CookieAnimation(0)
-    private var animationOutTop: CookieAnimation = CookieAnimation(0)
-    private var animationOutBottom: CookieAnimation = CookieAnimation(0)
-    private var steps: MutableList<CookieAnimation> = mutableListOf()
     private var isAutoDismissEnabled: Boolean = false
     private var isSwipeable: Boolean = false
     private var shownListener: (() -> Unit)? = null
     private var dismissListener: (() -> Unit)? = null
+    
+    private var steps: MutableList<AnimationStep> = mutableListOf()
     
     /**
      * Used for swipe out animation
@@ -56,7 +54,7 @@ internal class Cookie @JvmOverloads constructor(context: Context, attrs: Attribu
             override fun onAnimationCancel(animation: Animator) {}
             override fun onAnimationRepeat(animation: Animator) {}
         }
-
+    
     private fun initViews(@LayoutRes rootView: Int, viewInitializer: CookieBar.CustomViewInitializer?) {
         if (rootView != 0) {
             View.inflate(context, rootView, this)
@@ -64,13 +62,10 @@ internal class Cookie @JvmOverloads constructor(context: Context, attrs: Attribu
         } else {
             View.inflate(context, R.layout.layout_cookie, this)
         }
-
-        if (getChildAt(0).layoutParams is LayoutParams) {
-            (getChildAt(0).layoutParams as LayoutParams).gravity = Gravity.BOTTOM
-        }
-
+        
+        if (getChildAt(0).layoutParams is LayoutParams) (getChildAt(0).layoutParams as LayoutParams).gravity = Gravity.BOTTOM
+        
         layoutCookie = findViewById(R.id.cookie)
-        layoutContent = findViewById(R.id.content)
         tvTitle = findViewById(R.id.tv_title)
         tvMessage = findViewById(R.id.tv_message)
         ivIcon = findViewById(R.id.iv_icon)
@@ -85,23 +80,38 @@ internal class Cookie @JvmOverloads constructor(context: Context, attrs: Attribu
     
     fun setParams(params: CookieBar.Params) {
         initViews(params.customViewResource, params.viewInitializer)
-
+        
         layoutGravity = params.cookiePosition
-        animationInTop = params.animationInTop
-        animationInBottom = params.animationInBottom
-        animationOutTop = params.animationOutTop
-        animationOutBottom = params.animationOutBottom
         isSwipeable = params.enableSwipeToDismiss
         isAutoDismissEnabled = params.enableAutoDismiss
         shownListener = params.shownListener
         dismissListener = params.dismissListener
-
-        //load steps
-        steps.add(0, if(layoutGravity==Gravity.BOTTOM) animationInBottom else animationInTop)
-        steps.addAll(params.additionalSteps)
-        steps.add(CookieAnimation(R.anim.enlarge, 5000))
-        steps.add(CookieAnimation(R.anim.reduce, 5000))
-        steps.add(if(layoutGravity==Gravity.BOTTOM) animationOutBottom else animationOutTop)
+        
+        layoutCookie!!.visibility = View.INVISIBLE
+        steps.add(AnimationStep(0, null, CookieAnimation({
+            invisible()
+        })))
+        steps.add(AnimationStep(0, null, CookieAnimation({
+            visible()
+            outOfScreen(Gravity.BOTTOM)
+        })))
+        steps.add(AnimationStep(700, AccelerateDecelerateInterpolator(), CookieAnimation({
+            centerInParent(horizontal = false, vertical = true)
+        })))
+        steps.add(AnimationStep(5000, null, CookieAnimation({
+            centerInParent(horizontal = false, vertical = true)
+        })))
+        steps.add(AnimationStep(700, null, CookieAnimation({
+            width(1159, keepRatio = true, toDp = true)
+            bottomOfItsParent(60f)
+        })))
+        steps.add(AnimationStep(3000, null, CookieAnimation({
+            width(1159, keepRatio = true, toDp = true)
+            bottomOfItsParent(60f)
+        })))
+        steps.add(AnimationStep(700, null, CookieAnimation({
+            outOfScreen(Gravity.BOTTOM)
+        })))
         
         //Icon
         if (params.iconResId != 0) {
@@ -112,7 +122,7 @@ internal class Cookie @JvmOverloads constructor(context: Context, attrs: Attribu
                 start()
             }
         }
-
+        
         //Title
         if (!TextUtils.isEmpty(params.title)) {
             tvTitle?.visibility = View.VISIBLE
@@ -122,7 +132,7 @@ internal class Cookie @JvmOverloads constructor(context: Context, attrs: Attribu
             }
             setDefaultTextSize(tvTitle, R.attr.cookieTitleSize)
         }
-
+        
         //Message
         if (!TextUtils.isEmpty(params.message)) {
             tvMessage?.visibility = View.VISIBLE
@@ -132,29 +142,40 @@ internal class Cookie @JvmOverloads constructor(context: Context, attrs: Attribu
             }
             setDefaultTextSize(tvMessage, R.attr.cookieMessageSize)
         }
-
+        
         val defaultPadding = context.resources.getDimensionPixelSize(R.dimen.default_padding)
         val padding = ThemeResolver.getDimen(context, R.attr.cookiePadding, defaultPadding)
-
+        
         if (layoutGravity == Gravity.BOTTOM) {
             layoutCookie?.setPadding(padding, padding, padding, padding)
         }
-
-        nextStep()
-        createOutAnim()
+        
+        var auxSteps = listOf<PleaseAnim>()
+        auxSteps = steps.mapIndexed { index, step ->
+            please(step.duration) {
+                step.animations.forEach { animate(findViewById(it.target ?: R.id.cookie)).toBe(it.expectations) }
+            }.withEndAction {
+                if(index+1<steps.size) auxSteps[index+1].start()
+                if(index+1==steps.size) {
+                    visibility = View.GONE
+                    removeFromParent()
+                }
+            }
+        }
+        auxSteps.first().start()
     }
-
+    
     private fun setDefaultTextSize(textView: TextView?, @AttrRes attr: Int) {
         val size = ThemeResolver.getDimen(context, attr, 0).toFloat()
         if (size > 0) {
             textView?.setTextSize(TypedValue.COMPLEX_UNIT_PX, size)
         }
     }
-
+    
     override fun onLayout(changed: Boolean, l: Int, t: Int, r: Int, b: Int) {
         viewWidth = width.toFloat()
         dismissOffsetThreshold = viewWidth / 3
-
+        
         if (layoutGravity == Gravity.TOP) {
             super.onLayout(changed, l, 0, r, layoutCookie?.measuredHeight ?: 0)
         } else {
@@ -162,50 +183,14 @@ internal class Cookie @JvmOverloads constructor(context: Context, attrs: Attribu
         }
     }
     
-    var currentStepIndex = 0
-    
-    private fun nextStep() {
-        println("Cookie | nextStep currentStepIndex = $currentStepIndex")
-        val currentAnimation = steps[currentStepIndex]
-        AnimationUtils.loadAnimation(context, currentAnimation.animationId).apply {
-            currentAnimation.duration?.let { duration = it }
-            setAnimationListener(object : Animation.AnimationListener {
-                override fun onAnimationEnd(animation: Animation) {
-                    println("Cookie | onAnimationEnd currentStepIndex = $currentStepIndex")
-                    shownListener?.invoke()
-                    if (!isAutoDismissEnabled) return
-                    postDelayed({
-                        currentStepIndex += 1
-                        if(currentStepIndex==steps.size-1) dismiss() else nextStep()
-                    }, currentAnimation.delayUntilNextStep)
-                }
-        
-                override fun onAnimationStart(animation: Animation) {}
-                override fun onAnimationRepeat(animation: Animation) {}
-            })
-            if(currentStepIndex==0) {
-                startAnimation(this)
-            }else{
-                layoutContent!!.startAnimation(this)
-            }
-        }
-    }
-    
-    private fun createOutAnim() {
-        val currentAnimation = steps.last()
-        slideOutAnimation = AnimationUtils.loadAnimation(context, currentAnimation.animationId).apply {
-            currentAnimation.duration?.let { duration = it }
-        }
-    }
-
     @JvmOverloads
     fun dismiss(listener: (() -> Unit)? = null) {
         if (swipedOut) {
             removeFromParent()
             return
         }
-
-        slideOutAnimation?.setAnimationListener(object : Animation.AnimationListener {
+        
+        /*TODO slideOutAnimation?.setAnimationListener(object : Animation.AnimationListener {
             override fun onAnimationEnd(animation: Animation) {
                 listener?.invoke()
                 visibility = View.GONE
@@ -213,11 +198,9 @@ internal class Cookie @JvmOverloads constructor(context: Context, attrs: Attribu
             }
             override fun onAnimationStart(animation: Animation) {}
             override fun onAnimationRepeat(animation: Animation) {}
-        })
-
-        startAnimation(slideOutAnimation)
+        })*/
     }
-
+    
     private fun removeFromParent() {
         postDelayed({
             val parent = parent
@@ -228,18 +211,18 @@ internal class Cookie @JvmOverloads constructor(context: Context, attrs: Attribu
             }
         }, 200)
     }
-
+    
     override fun onTouch(view: View, motionEvent: MotionEvent): Boolean {
         if (!isSwipeable) {
             return true
         }
-
+        
         when (motionEvent.action) {
             MotionEvent.ACTION_DOWN -> {
                 initialDragX = motionEvent.rawX
                 return true
             }
-
+            
             MotionEvent.ACTION_UP -> {
                 if (!swipedOut) {
                     view.animate()
@@ -250,7 +233,7 @@ internal class Cookie @JvmOverloads constructor(context: Context, attrs: Attribu
                 }
                 return true
             }
-
+            
             MotionEvent.ACTION_MOVE -> {
                 if (swipedOut) {
                     return true
@@ -258,24 +241,24 @@ internal class Cookie @JvmOverloads constructor(context: Context, attrs: Attribu
                 var offset = motionEvent.rawX - initialDragX
                 var alpha = 1 - Math.abs(offset / viewWidth)
                 var duration: Long = 0
-
+                
                 if (Math.abs(offset) > dismissOffsetThreshold) {
                     offset = viewWidth * Math.signum(offset)
                     alpha = 0f
                     duration = 200
                     swipedOut = true
                 }
-
+                
                 view.animate()
                         .setListener(if (swipedOut) destroyListener else null)
                         .x(offset)
                         .alpha(alpha)
                         .setDuration(duration)
                         .start()
-
+                
                 return true
             }
-
+            
             else -> return false
         }
     }

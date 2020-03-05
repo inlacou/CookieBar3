@@ -180,19 +180,6 @@ class CookieBar private constructor(private val context: Activity, params: Param
             return this
         }
 
-        fun setAnimationIn(topAnimation: CookieStartAnimation, bottomAnimation: CookieStartAnimation): Builder {
-            params.animationInTop = topAnimation
-            params.animationInBottom = bottomAnimation
-            return this
-        }
-
-        fun setAnimationOut(topAnimation: CookieEndAnimation, bottomAnimation: CookieEndAnimation): Builder {
-            params.animationOutTop = topAnimation
-            params.animationOutBottom = bottomAnimation
-            return this
-        }
-
-
         fun setEnableAutoDismiss(enableAutoDismiss: Boolean): Builder {
             params.enableAutoDismiss = enableAutoDismiss
             return this
@@ -246,10 +233,6 @@ class CookieBar private constructor(private val context: Activity, params: Param
         var duration: Long = 2000
         var cookiePosition = Gravity.TOP
         var customViewResource: Int = 0
-        var animationInTop = CookieStartAnimation(R.anim.slide_in_from_top)
-        var animationInBottom = CookieStartAnimation(R.anim.slide_in_from_bottom)
-        var animationOutTop = CookieEndAnimation(R.anim.slide_out_to_top)
-        var animationOutBottom = CookieEndAnimation(R.anim.slide_out_to_bottom)
         var additionalSteps = mutableListOf<CookieAnimation>()
         var viewInitializer: CustomViewInitializer? = null
         var iconAnimator: AnimatorSet? = null
