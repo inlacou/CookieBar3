@@ -39,7 +39,7 @@ internal class Cookie @JvmOverloads constructor(context: Context, attrs: Attribu
     private var swipedOut: Boolean = false
     private var isAutoDismissEnabled: Boolean = false
     private var isSwipeable: Boolean = false
-    private var shownListener: (() -> Unit)? = null
+    private var animationEndListener: ((animationIndex: Int) -> Unit)? = null
     private var dismissListener: (() -> Unit)? = null
     
     private var steps: MutableList<AnimationStep> = mutableListOf()
@@ -84,7 +84,7 @@ internal class Cookie @JvmOverloads constructor(context: Context, attrs: Attribu
         layoutGravity = params.cookiePosition
         isSwipeable = params.enableSwipeToDismiss
         isAutoDismissEnabled = params.enableAutoDismiss
-        shownListener = params.shownListener
+        animationEndListener = params.animationEndListener
         dismissListener = params.dismissListener
         
         layoutCookie!!.visibility = View.INVISIBLE
@@ -135,6 +135,7 @@ internal class Cookie @JvmOverloads constructor(context: Context, attrs: Attribu
             please(step.duration) {
                 step.animations.forEach { animate(findViewById(it.target ?: R.id.cookie)).toBe(it.expectations) }
             }.withEndAction {
+                animationEndListener?.invoke(index)
                 if(index+1<auxSteps.size) auxSteps[index+1].start()
                 if(index+1==auxSteps.size) {
                     visibility = View.GONE
@@ -165,20 +166,25 @@ internal class Cookie @JvmOverloads constructor(context: Context, attrs: Attribu
     
     @JvmOverloads
     fun dismiss(listener: (() -> Unit)? = null) {
+        println("Cookie | dismiss: $listener")
         if (swipedOut) {
             removeFromParent()
+            println("Cookie | dismiss: return")
             return
         }
-        
-        /*TODO slideOutAnimation?.setAnimationListener(object : Animation.AnimationListener {
-            override fun onAnimationEnd(animation: Animation) {
-                listener?.invoke()
-                visibility = View.GONE
-                removeFromParent()
-            }
-            override fun onAnimationStart(animation: Animation) {}
-            override fun onAnimationRepeat(animation: Animation) {}
-        })*/
+    
+        listener?.invoke()
+        visibility = View.GONE
+        removeFromParent()
+        /* TODO stop gracefully, making the out animation
+        steps.lastOrNull()?.let { step ->
+            println("Cookie | dismiss: lastOrNull")
+            please(step.duration) {
+                step.animations.forEach { animate(findViewById(it.target ?: R.id.cookie)).toBe(it.expectations) }
+            }.withEndAction {
+                println("Cookie | dismiss: withEndAction")
+            }.now()
+        }*/
     }
     
     private fun removeFromParent() {

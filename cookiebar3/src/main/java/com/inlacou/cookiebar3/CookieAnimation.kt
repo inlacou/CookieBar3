@@ -4,7 +4,15 @@ import android.support.annotation.IdRes
 import android.view.animation.Interpolator
 import com.github.florent37.kotlin.pleaseanimate.core.Expectations
 
-data class AnimationStep constructor(val duration: Long, val interpolator: Interpolator? = null, val holdOnPosition: Long = 0, val animations: List<CookieAnimation>){
+data class AnimationStep constructor(
+		val duration: Long,
+		val interpolator: Interpolator? = null,
+		/**
+		 * If holdOnPosition > 0, a new step is created to stay in the same place.
+		 */
+		val holdOnPosition: Long = 0,
+		val animations: List<CookieAnimation>
+){
 	constructor(duration: Long, interpolator: Interpolator?, holdOnPosition: Long, animation: CookieAnimation) : this(duration, interpolator, holdOnPosition, listOf(animation))
 	constructor(duration: Long, interpolator: Interpolator?, holdOnPosition: Long, animation: CookieAnimation, animation1: CookieAnimation) : this(duration, interpolator, holdOnPosition, listOf(animation, animation1))
 	constructor(duration: Long, interpolator: Interpolator?, holdOnPosition: Long, animation: CookieAnimation, animation1: CookieAnimation, animation2: CookieAnimation) : this(duration, interpolator, holdOnPosition, listOf(animation, animation1, animation2))
