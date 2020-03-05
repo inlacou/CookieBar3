@@ -3,7 +3,6 @@ package com.inlacou.cookiebar3
 import android.animation.AnimatorInflater
 import android.animation.AnimatorSet
 import android.app.Activity
-import android.support.annotation.AnimRes
 import android.support.annotation.AnimatorRes
 import android.support.annotation.ColorRes
 import android.support.annotation.DrawableRes
@@ -191,12 +190,12 @@ class CookieBar private constructor(private val context: Activity, params: Param
             return this
         }
 
-        fun setSteps(additionalSteps: List<AnimationStep>): Builder {
+        fun setSteps(additionalSteps: List<CookieAnimationStep>): Builder {
             params.steps = additionalSteps.toMutableList()
             return this
         }
 
-        fun addStep(additionalStep: AnimationStep): Builder {
+        fun addStep(additionalStep: CookieAnimationStep): Builder {
             params.steps.add(additionalStep)
             return this
         }
@@ -223,7 +222,7 @@ class CookieBar private constructor(private val context: Activity, params: Param
         var messageColor: Int = 0
         var cookiePosition = Gravity.TOP
         var customViewResource: Int = 0
-        var steps = mutableListOf<AnimationStep>()
+        var steps = mutableListOf<CookieAnimationStep>()
         var viewInitializer: CustomViewInitializer? = null
         var iconAnimator: AnimatorSet? = null
         var dismissListener: (() -> Unit)? = null

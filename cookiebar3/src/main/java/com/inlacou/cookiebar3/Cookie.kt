@@ -3,7 +3,6 @@ package com.inlacou.cookiebar3
 import android.animation.Animator
 import android.annotation.SuppressLint
 import android.content.Context
-import android.content.res.Resources
 import android.support.annotation.AttrRes
 import android.support.annotation.LayoutRes
 import android.support.v4.content.ContextCompat
@@ -14,15 +13,10 @@ import android.view.Gravity
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
-import android.view.animation.AccelerateDecelerateInterpolator
-import android.view.animation.Animation
-import android.view.animation.AnimationUtils
-import android.view.animation.BounceInterpolator
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import com.github.florent37.kotlin.pleaseanimate.PleaseAnim
-import com.github.florent37.kotlin.pleaseanimate.core.Expectations
 import com.github.florent37.kotlin.pleaseanimate.please
 
 internal class Cookie @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0)
@@ -42,7 +36,7 @@ internal class Cookie @JvmOverloads constructor(context: Context, attrs: Attribu
     private var animationEndListener: ((animationIndex: Int) -> Unit)? = null
     private var dismissListener: (() -> Unit)? = null
     
-    private var steps: MutableList<AnimationStep> = mutableListOf()
+    private var steps: MutableList<CookieAnimationStep> = mutableListOf()
     
     /**
      * Used for swipe out animation
@@ -129,7 +123,7 @@ internal class Cookie @JvmOverloads constructor(context: Context, attrs: Attribu
         
         var auxSteps = listOf<PleaseAnim>()
         auxSteps = steps.flatMap {
-            if(it.holdOnPosition>0) listOf(it, AnimationStep(duration = it.holdOnPosition, interpolator = it.interpolator, holdOnPosition = 0, animations = it.animations))
+            if(it.holdOnPosition>0) listOf(it, CookieAnimationStep(duration = it.holdOnPosition, interpolator = it.interpolator, holdOnPosition = 0, animations = it.animations))
             else listOf(it)
         }.mapIndexed { index, step ->
             please(step.duration) {

@@ -1,0 +1,17 @@
+package com.inlacou.cookiebar3
+
+import android.view.animation.Interpolator
+
+data class CookieAnimationStep constructor(
+		val duration: Long,
+		val interpolator: Interpolator? = null,
+		/**
+		 * If holdOnPosition > 0, a new step is created to stay in the same place.
+		 */
+		val holdOnPosition: Long = 0,
+		val animations: List<CookieAnimation>
+){
+	constructor(duration: Long, interpolator: Interpolator?, holdOnPosition: Long, animation: CookieAnimation) : this(duration, interpolator, holdOnPosition, listOf(animation))
+	constructor(duration: Long, interpolator: Interpolator?, holdOnPosition: Long, animation: CookieAnimation, animation1: CookieAnimation) : this(duration, interpolator, holdOnPosition, listOf(animation, animation1))
+	constructor(duration: Long, interpolator: Interpolator?, holdOnPosition: Long, animation: CookieAnimation, animation1: CookieAnimation, animation2: CookieAnimation) : this(duration, interpolator, holdOnPosition, listOf(animation, animation1, animation2))
+}

@@ -3,14 +3,10 @@ package com.inlacou.cookiebarsample
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
-import android.view.Gravity
 import android.view.View
-import android.view.animation.AccelerateDecelerateInterpolator
 import android.widget.Button
 import com.inlacou.cookiebar3.AnimationRoutes
-import com.inlacou.cookiebar3.AnimationStep
 import com.inlacou.cookiebar3.CookieBar.Companion.BOTTOM
-import com.inlacou.cookiebar3.CookieAnimation
 import com.inlacou.cookiebar3.CookieBar.Companion.build
 import com.inlacou.cookiebar3.CookieBar.Companion.dismiss
 
