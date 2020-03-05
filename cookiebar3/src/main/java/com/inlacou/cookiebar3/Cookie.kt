@@ -88,28 +88,21 @@ internal class Cookie @JvmOverloads constructor(context: Context, attrs: Attribu
         dismissListener = params.dismissListener
         
         layoutCookie!!.visibility = View.INVISIBLE
-        steps.add(AnimationStep(0, null, CookieAnimation({
+        steps.add(AnimationStep(0, null, 0, CookieAnimation({
             invisible()
         })))
-        steps.add(AnimationStep(0, null, CookieAnimation({
+        steps.add(AnimationStep(0, null, 0, CookieAnimation({
             visible()
             outOfScreen(Gravity.BOTTOM)
         })))
-        steps.add(AnimationStep(700, AccelerateDecelerateInterpolator(), CookieAnimation({
+        steps.add(AnimationStep(700, AccelerateDecelerateInterpolator(), 5000, CookieAnimation({
             centerInParent(horizontal = false, vertical = true)
         })))
-        steps.add(AnimationStep(5000, null, CookieAnimation({
-            centerInParent(horizontal = false, vertical = true)
-        })))
-        steps.add(AnimationStep(700, null, CookieAnimation({
+        steps.add(AnimationStep(700, null, 3000, CookieAnimation({
             width(1159, keepRatio = true, toDp = true)
             bottomOfItsParent(60f)
         })))
-        steps.add(AnimationStep(3000, null, CookieAnimation({
-            width(1159, keepRatio = true, toDp = true)
-            bottomOfItsParent(60f)
-        })))
-        steps.add(AnimationStep(700, null, CookieAnimation({
+        steps.add(AnimationStep(700, null, 0, CookieAnimation({
             outOfScreen(Gravity.BOTTOM)
         })))
         
@@ -151,12 +144,15 @@ internal class Cookie @JvmOverloads constructor(context: Context, attrs: Attribu
         }
         
         var auxSteps = listOf<PleaseAnim>()
-        auxSteps = steps.mapIndexed { index, step ->
+        auxSteps = steps.flatMap {
+            if(it.holdOnPosition>0) listOf(it, AnimationStep(it.holdOnPosition, it.interpolator, 0, it.animations))
+            else listOf(it)
+        }.mapIndexed { index, step ->
             please(step.duration) {
                 step.animations.forEach { animate(findViewById(it.target ?: R.id.cookie)).toBe(it.expectations) }
             }.withEndAction {
-                if(index+1<steps.size) auxSteps[index+1].start()
-                if(index+1==steps.size) {
+                if(index+1<auxSteps.size) auxSteps[index+1].start()
+                if(index+1==auxSteps.size) {
                     visibility = View.GONE
                     removeFromParent()
                 }
