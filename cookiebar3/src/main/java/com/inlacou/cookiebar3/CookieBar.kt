@@ -213,6 +213,16 @@ class CookieBar private constructor(private val context: Activity, params: Param
             return this
         }
 
+        fun setAdditionalSteps(additionalSteps: List<CookieAnimation>): Builder {
+            params.additionalSteps = additionalSteps.toMutableList()
+            return this
+        }
+
+        fun addAdditionalStep(additionalStep: CookieAnimation): Builder {
+            params.additionalSteps.add(additionalStep)
+            return this
+        }
+
         fun create(): CookieBar {
             return CookieBar(context, params)
         }
@@ -240,6 +250,7 @@ class CookieBar private constructor(private val context: Activity, params: Param
         var animationInBottom = CookieStartAnimation(R.anim.slide_in_from_bottom)
         var animationOutTop = CookieEndAnimation(R.anim.slide_out_to_top)
         var animationOutBottom = CookieEndAnimation(R.anim.slide_out_to_bottom)
+        var additionalSteps = mutableListOf<CookieAnimation>()
         var viewInitializer: CustomViewInitializer? = null
         var iconAnimator: AnimatorSet? = null
         var dismissListener: (() -> Unit)? = null
