@@ -6,5 +6,4 @@ import com.github.florent37.kotlin.pleaseanimate.core.Expectations
 
 data class CookieAnimation(
 		val expectations: (Expectations.() -> Unit),
-		@IdRes val target: Int? = null,
-		val tag: String? = null)
+		@IdRes val target: Int? = null)

@@ -33,7 +33,7 @@ internal class Cookie @JvmOverloads constructor(context: Context, attrs: Attribu
     private var swipedOut: Boolean = false
     private var isAutoDismissEnabled: Boolean = false
     private var isSwipeable: Boolean = false
-    private var animationEndListener: ((animationIndex: Int) -> Unit)? = null
+    private var animationEndListener: ((animationIndex: Int, tag: String?) -> Unit)? = null
     private var dismissListener: (() -> Unit)? = null
     
     private var steps: MutableList<CookieAnimationStep> = mutableListOf()
@@ -123,13 +123,13 @@ internal class Cookie @JvmOverloads constructor(context: Context, attrs: Attribu
         
         var auxSteps = listOf<PleaseAnim>()
         auxSteps = steps.flatMap {
-            if(it.holdOnPosition>0) listOf(it, CookieAnimationStep(duration = it.holdOnPosition, interpolator = it.interpolator, holdOnPosition = 0, animations = it.animations))
+            if(it.holdOnPosition>0) listOf(it, it.copy(duration = it.holdOnPosition, holdOnPosition = -1337))
             else listOf(it)
         }.mapIndexed { index, step ->
             please(step.duration) {
                 step.animations.forEach { animate(findViewById(it.target ?: R.id.cookie)).toBe(it.expectations) }
             }.withEndAction {
-                animationEndListener?.invoke(index)
+                animationEndListener?.invoke(index, if(step.holdOnPosition==-1337L) step.tag+"-hold" else step.tag)
                 if(index+1<auxSteps.size) auxSteps[index+1].start()
                 if(index+1==auxSteps.size) {
                     visibility = View.GONE

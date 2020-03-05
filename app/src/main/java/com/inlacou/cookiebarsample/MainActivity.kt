@@ -57,11 +57,10 @@ class MainActivity : AppCompatActivity() {
 					.setIcon(R.drawable.cookiemonster)
 					.setCookiePosition(BOTTOM)
 					.setSteps(AnimationRoutes.specialExample)
-					.setShownListener { Log.d("example_activity", "cookie animation step $it finished") }
+					.setShownListener { index: Int, tag: String? -> Log.d("example_activity", "cookie animation step ($index-$tag) finished") }
 					.setDismissListener { Log.d("example_activity", "cookie dismissed") }
 					.show()
 		}
-		findViewById<View>(R.id.activity_main).setOnClickListener { dismiss(this@MainActivity) }
 	}
 	
 }
