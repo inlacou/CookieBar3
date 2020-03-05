@@ -200,13 +200,13 @@ class CookieBar private constructor(private val context: Activity, params: Param
             return this
         }
 
-        fun setAdditionalSteps(additionalSteps: List<CookieAnimation>): Builder {
-            params.additionalSteps = additionalSteps.toMutableList()
+        fun setSteps(additionalSteps: List<AnimationStep>): Builder {
+            params.steps = additionalSteps.toMutableList()
             return this
         }
 
-        fun addAdditionalStep(additionalStep: CookieAnimation): Builder {
-            params.additionalSteps.add(additionalStep)
+        fun addStep(additionalStep: AnimationStep): Builder {
+            params.steps.add(additionalStep)
             return this
         }
 
@@ -233,7 +233,7 @@ class CookieBar private constructor(private val context: Activity, params: Param
         var duration: Long = 2000
         var cookiePosition = Gravity.TOP
         var customViewResource: Int = 0
-        var additionalSteps = mutableListOf<CookieAnimation>()
+        var steps = mutableListOf<AnimationStep>()
         var viewInitializer: CustomViewInitializer? = null
         var iconAnimator: AnimatorSet? = null
         var dismissListener: (() -> Unit)? = null

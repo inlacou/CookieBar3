@@ -88,30 +88,7 @@ internal class Cookie @JvmOverloads constructor(context: Context, attrs: Attribu
         dismissListener = params.dismissListener
         
         layoutCookie!!.visibility = View.INVISIBLE
-        steps.add(AnimationStep(0, null, 0, CookieAnimation({
-            centerInParent(horizontal = true, vertical = false)
-            invisible()
-        }), CookieAnimation({
-            textSize(36f)
-        }, target = R.id.tv_title)))
-        steps.add(AnimationStep(0, null, 0, listOf(CookieAnimation({
-            visible()
-            outOfScreen(Gravity.BOTTOM)
-        }), CookieAnimation({
-            textSize(36f)
-        }, target = R.id.tv_title))))
-        steps.add(AnimationStep(700, AccelerateDecelerateInterpolator(), 5000, CookieAnimation({
-            centerInParent(horizontal = false, vertical = true)
-        })))
-        steps.add(AnimationStep(700, null, 3000, CookieAnimation({
-            width(505, keepRatio = true, toDp = true)
-            bottomOfItsParent(60f)
-        }), CookieAnimation({
-            textSize(30f)
-        }, target = R.id.tv_title)))
-        steps.add(AnimationStep(700, null, 0, CookieAnimation({
-            outOfScreen(Gravity.BOTTOM)
-        })))
+        steps.addAll(params.steps)
         
         //Icon
         if (params.iconResId != 0) {
@@ -165,7 +142,7 @@ internal class Cookie @JvmOverloads constructor(context: Context, attrs: Attribu
                 }
             }
         }
-        auxSteps.first().start()
+        auxSteps.firstOrNull()?.start()
     }
     
     private fun setDefaultTextSize(textView: TextView?, @AttrRes attr: Int) {
