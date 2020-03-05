@@ -89,6 +89,7 @@ internal class Cookie @JvmOverloads constructor(context: Context, attrs: Attribu
         
         layoutCookie!!.visibility = View.INVISIBLE
         steps.add(AnimationStep(0, null, 0, CookieAnimation({
+            centerInParent(horizontal = true, vertical = false)
             invisible()
         }), CookieAnimation({
             textSize(36f)
@@ -103,7 +104,7 @@ internal class Cookie @JvmOverloads constructor(context: Context, attrs: Attribu
             centerInParent(horizontal = false, vertical = true)
         })))
         steps.add(AnimationStep(700, null, 3000, CookieAnimation({
-            width(1159, keepRatio = true, toDp = true)
+            width(505, keepRatio = true, toDp = true)
             bottomOfItsParent(60f)
         }), CookieAnimation({
             textSize(30f)
