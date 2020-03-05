@@ -116,15 +116,6 @@ class CookieBar private constructor(private val context: Activity, params: Param
             params.message = context.getString(resId)
             return this
         }
-    
-        /**
-         * Sets duration this cookie is visible. Total amount would be with in and out animations.
-         * So if you want the cookie to be "visible on place" for 3 seconds, you will have to set duration as 3000L.
-         */
-        fun setDuration(duration: Long): Builder {
-            params.duration = duration
-            return this
-        }
 
         fun setTitleColor(@ColorRes titleColor: Int): Builder {
             params.titleColor = titleColor
@@ -230,7 +221,6 @@ class CookieBar private constructor(private val context: Activity, params: Param
         var backgroundColor: Int = 0
         var titleColor: Int = 0
         var messageColor: Int = 0
-        var duration: Long = 2000
         var cookiePosition = Gravity.TOP
         var customViewResource: Int = 0
         var steps = mutableListOf<AnimationStep>()
