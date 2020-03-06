@@ -3,7 +3,6 @@ package com.inlacou.cookiebar3
 import android.animation.AnimatorInflater
 import android.animation.AnimatorSet
 import android.app.Activity
-import android.support.annotation.AnimRes
 import android.support.annotation.AnimatorRes
 import android.support.annotation.ColorRes
 import android.support.annotation.DrawableRes
@@ -116,15 +115,6 @@ class CookieBar private constructor(private val context: Activity, params: Param
             params.message = context.getString(resId)
             return this
         }
-    
-        /**
-         * Sets duration this cookie is visible. Total amount would be with in and out animations.
-         * So if you want the cookie to be "visible on place" for 3 seconds, you will have to set duration as 3000L.
-         */
-        fun setDuration(duration: Long): Builder {
-            params.duration = duration
-            return this
-        }
 
         fun setTitleColor(@ColorRes titleColor: Int): Builder {
             params.titleColor = titleColor
@@ -180,19 +170,6 @@ class CookieBar private constructor(private val context: Activity, params: Param
             return this
         }
 
-        fun setAnimationIn(topAnimation: CookieStartAnimation, bottomAnimation: CookieStartAnimation): Builder {
-            params.animationInTop = topAnimation
-            params.animationInBottom = bottomAnimation
-            return this
-        }
-
-        fun setAnimationOut(topAnimation: CookieEndAnimation, bottomAnimation: CookieEndAnimation): Builder {
-            params.animationOutTop = topAnimation
-            params.animationOutBottom = bottomAnimation
-            return this
-        }
-
-
         fun setEnableAutoDismiss(enableAutoDismiss: Boolean): Builder {
             params.enableAutoDismiss = enableAutoDismiss
             return this
@@ -203,8 +180,8 @@ class CookieBar private constructor(private val context: Activity, params: Param
             return this
         }
 
-        fun setShownListener(shownListener: (() -> Unit)): Builder {
-            params.shownListener = shownListener
+        fun setShownListener(animationEndListener: ((animationIndex: Int, tag: String?, hold: Boolean) -> Unit)): Builder {
+            params.animationEndListener = animationEndListener
             return this
         }
 
@@ -213,13 +190,13 @@ class CookieBar private constructor(private val context: Activity, params: Param
             return this
         }
 
-        fun setAdditionalSteps(additionalSteps: List<CookieAnimation>): Builder {
-            params.additionalSteps = additionalSteps.toMutableList()
+        fun setSteps(additionalSteps: List<CookieAnimationStep>): Builder {
+            params.steps = additionalSteps.toMutableList()
             return this
         }
 
-        fun addAdditionalStep(additionalStep: CookieAnimation): Builder {
-            params.additionalSteps.add(additionalStep)
+        fun addStep(additionalStep: CookieAnimationStep): Builder {
+            params.steps.add(additionalStep)
             return this
         }
 
@@ -243,18 +220,13 @@ class CookieBar private constructor(private val context: Activity, params: Param
         var backgroundColor: Int = 0
         var titleColor: Int = 0
         var messageColor: Int = 0
-        var duration: Long = 2000
         var cookiePosition = Gravity.TOP
         var customViewResource: Int = 0
-        var animationInTop = CookieStartAnimation(R.anim.slide_in_from_top)
-        var animationInBottom = CookieStartAnimation(R.anim.slide_in_from_bottom)
-        var animationOutTop = CookieEndAnimation(R.anim.slide_out_to_top)
-        var animationOutBottom = CookieEndAnimation(R.anim.slide_out_to_bottom)
-        var additionalSteps = mutableListOf<CookieAnimation>()
+        var steps = mutableListOf<CookieAnimationStep>()
         var viewInitializer: CustomViewInitializer? = null
         var iconAnimator: AnimatorSet? = null
         var dismissListener: (() -> Unit)? = null
-        var shownListener: (() -> Unit)? = null
+        var animationEndListener: ((animationIndex: Int, tag: String?, hold: Boolean) -> Unit)? = null
     }
 
     interface CustomViewInitializer {
