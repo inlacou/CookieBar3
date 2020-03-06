@@ -180,7 +180,7 @@ class CookieBar private constructor(private val context: Activity, params: Param
             return this
         }
 
-        fun setShownListener(animationEndListener: ((animationIndex: Int, tag: String?) -> Unit)): Builder {
+        fun setShownListener(animationEndListener: ((animationIndex: Int, tag: String?, hold: Boolean) -> Unit)): Builder {
             params.animationEndListener = animationEndListener
             return this
         }
@@ -226,7 +226,7 @@ class CookieBar private constructor(private val context: Activity, params: Param
         var viewInitializer: CustomViewInitializer? = null
         var iconAnimator: AnimatorSet? = null
         var dismissListener: (() -> Unit)? = null
-        var animationEndListener: ((animationIndex: Int, tag: String?) -> Unit)? = null
+        var animationEndListener: ((animationIndex: Int, tag: String?, hold: Boolean) -> Unit)? = null
     }
 
     interface CustomViewInitializer {

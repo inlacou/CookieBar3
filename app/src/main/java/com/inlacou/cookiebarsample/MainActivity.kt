@@ -57,7 +57,7 @@ class MainActivity : AppCompatActivity() {
 					.setIcon(R.drawable.cookiemonster)
 					.setCookiePosition(BOTTOM)
 					.setSteps(AnimationRoutes.specialExample)
-					.setShownListener { index: Int, tag: String? -> Log.d("example_activity", "cookie animation step ($index-$tag) finished") }
+					.setShownListener { index: Int, tag: String?, hold: Boolean -> Log.d("example_activity", "cookie animation step ($index-$tag${if(hold) "-hold" else ""}) finished") }
 					.setDismissListener { Log.d("example_activity", "cookie dismissed") }
 					.show()
 		}

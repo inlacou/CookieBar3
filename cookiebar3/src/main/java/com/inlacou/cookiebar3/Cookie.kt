@@ -33,7 +33,7 @@ internal class Cookie @JvmOverloads constructor(context: Context, attrs: Attribu
     private var swipedOut: Boolean = false
     private var isAutoDismissEnabled: Boolean = false
     private var isSwipeable: Boolean = false
-    private var animationEndListener: ((animationIndex: Int, tag: String?) -> Unit)? = null
+    private var animationEndListener: ((animationIndex: Int, tag: String?, hold: Boolean) -> Unit)? = null
     private var dismissListener: (() -> Unit)? = null
     
     private var steps: MutableList<CookieAnimationStep> = mutableListOf()
@@ -129,7 +129,7 @@ internal class Cookie @JvmOverloads constructor(context: Context, attrs: Attribu
             please(step.duration) {
                 step.animations.forEach { animate(findViewById(it.target ?: R.id.cookie)).toBe(it.expectations) }
             }.withEndAction {
-                animationEndListener?.invoke(index, if(step.holdOnPosition==-1337L) step.tag+"-hold" else step.tag)
+                animationEndListener?.invoke(index, step.tag, step.holdOnPosition==-1337L)
                 if(index+1<auxSteps.size) auxSteps[index+1].start()
                 if(index+1==auxSteps.size) {
                     visibility = View.GONE

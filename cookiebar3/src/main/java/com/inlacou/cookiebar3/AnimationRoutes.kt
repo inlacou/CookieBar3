@@ -2,6 +2,7 @@ package com.inlacou.cookiebar3
 
 import android.view.Gravity
 import android.view.animation.AccelerateDecelerateInterpolator
+import android.view.animation.BounceInterpolator
 
 object AnimationRoutes {
 	val showFromBottom by lazy { listOf(
@@ -57,7 +58,7 @@ object AnimationRoutes {
 			}), CookieAnimation({
 				textSize(36f)
 			}, target = R.id.tv_title))),
-			CookieAnimationStep(tag = "appear, center and anchor", duration = 700, interpolator = AccelerateDecelerateInterpolator(), holdOnPosition = 5000, animation = CookieAnimation({
+			CookieAnimationStep(tag = "appear, center and anchor", duration = 700, interpolator = BounceInterpolator(), holdOnPosition = 5000, animation = CookieAnimation({
 				//Appear and move to center
 				centerInParent(horizontal = false, vertical = true)
 			})),
