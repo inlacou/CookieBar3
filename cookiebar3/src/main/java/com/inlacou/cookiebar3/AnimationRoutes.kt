@@ -5,22 +5,28 @@ import android.view.animation.AccelerateDecelerateInterpolator
 import android.view.animation.BounceInterpolator
 
 object AnimationRoutes {
+	
+	private const val DEFAULT_TIME_CENTER_OF_SCREEN = 5000L
+	private const val DEFAULT_TIME_ABOVE_BOTTOM_BAR = 3000L
+	private const val DEFAULT_TIME_MOVEMENT_ANIMATION = 700L
+	private const val DEFAULT_BOTTOM_MARGIN_ABOVE_BOTTOM_BAR = 130f
+	
 	val showFromBottom by lazy { listOf(
-			CookieAnimationStep(0, null, 0, CookieAnimation({
+			CookieAnimationStep(tag = "basic init", duration = 0, animation = CookieAnimation({
 				//Basic initialization
 				centerInParent(horizontal = true, vertical = false)
 				invisible()
 			})),
-			CookieAnimationStep(0, null, 0, listOf(CookieAnimation({
+			CookieAnimationStep(tag = "precise init", duration = 0, animations = listOf(CookieAnimation({
 				//Precise initialization
 				visible()
 				outOfScreen(Gravity.BOTTOM)
 			}))),
-			CookieAnimationStep(700, null, 3000, CookieAnimation({
+			CookieAnimationStep(tag = "appear and anchor", duration = DEFAULT_TIME_MOVEMENT_ANIMATION, interpolator = BounceInterpolator(), holdOnPosition = DEFAULT_TIME_ABOVE_BOTTOM_BAR, animation = CookieAnimation({
 				//Appear and anchor bottom
-				bottomOfItsParent(0f)
+				bottomOfItsParent(DEFAULT_BOTTOM_MARGIN_ABOVE_BOTTOM_BAR)
 			})),
-			CookieAnimationStep(700, null, 0, CookieAnimation({
+			CookieAnimationStep(tag = "move out", duration = DEFAULT_TIME_MOVEMENT_ANIMATION, animation = CookieAnimation({
 				//Move out of screen
 				outOfScreen(Gravity.BOTTOM)
 			}))) }
@@ -35,11 +41,11 @@ object AnimationRoutes {
 				visible()
 				outOfScreen(Gravity.TOP)
 			}))),
-			CookieAnimationStep(tag = "appear and anchor", duration = 700, holdOnPosition = 3000, animation = CookieAnimation({
+			CookieAnimationStep(tag = "appear and anchor", duration = DEFAULT_TIME_MOVEMENT_ANIMATION, interpolator = BounceInterpolator(), holdOnPosition = DEFAULT_TIME_ABOVE_BOTTOM_BAR, animation = CookieAnimation({
 				//Appear and anchor bottom
-				topOfItsParent(0f)
+				topOfItsParent(DEFAULT_BOTTOM_MARGIN_ABOVE_BOTTOM_BAR)
 			})),
-			CookieAnimationStep(duration = 700, animation = CookieAnimation({
+			CookieAnimationStep(tag = "move out", duration = DEFAULT_TIME_MOVEMENT_ANIMATION, animation = CookieAnimation({
 				//Move out of screen
 				outOfScreen(Gravity.TOP)
 			}))) }
@@ -58,18 +64,18 @@ object AnimationRoutes {
 			}), CookieAnimation({
 				textSize(36f)
 			}, target = R.id.tv_title))),
-			CookieAnimationStep(tag = "appear, center and anchor", duration = 700, interpolator = BounceInterpolator(), holdOnPosition = 5000, animation = CookieAnimation({
+			CookieAnimationStep(tag = "appear, center and anchor", duration = DEFAULT_TIME_MOVEMENT_ANIMATION, interpolator = AccelerateDecelerateInterpolator(), holdOnPosition = DEFAULT_TIME_CENTER_OF_SCREEN, animation = CookieAnimation({
 				//Appear and move to center
 				centerInParent(horizontal = false, vertical = true)
 			})),
-			CookieAnimationStep(tag = "botton and resize, and anchor", duration = 700, holdOnPosition = 3000, animation = CookieAnimation({
+			CookieAnimationStep(tag = "botton and resize, and anchor", duration = DEFAULT_TIME_MOVEMENT_ANIMATION, interpolator = AccelerateDecelerateInterpolator(), holdOnPosition = DEFAULT_TIME_ABOVE_BOTTOM_BAR, animation = CookieAnimation({
 				//Move to bottom and resize self
 				width(505, keepRatio = true, toDp = true)
-				bottomOfItsParent(60f)
+				bottomOfItsParent(DEFAULT_BOTTOM_MARGIN_ABOVE_BOTTOM_BAR)
 			}), animation1 = CookieAnimation({
 				textSize(30f)
 			}, target = R.id.tv_title)),
-			CookieAnimationStep(tag = "move out", duration = 700, animation = CookieAnimation({
+			CookieAnimationStep(tag = "move out", duration = DEFAULT_TIME_MOVEMENT_ANIMATION, animation = CookieAnimation({
 				//Move out of screen
 				outOfScreen(Gravity.BOTTOM)
 			}))) }

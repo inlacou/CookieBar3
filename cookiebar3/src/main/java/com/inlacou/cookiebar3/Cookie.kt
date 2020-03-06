@@ -13,6 +13,7 @@ import android.view.Gravity
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.LinearInterpolator
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
@@ -126,7 +127,7 @@ internal class Cookie @JvmOverloads constructor(context: Context, attrs: Attribu
             if(it.holdOnPosition>0) listOf(it, it.copy(duration = it.holdOnPosition, holdOnPosition = -1337))
             else listOf(it)
         }.mapIndexed { index, step ->
-            please(step.duration) {
+            please(step.duration, interpolator = step.interpolator ?: LinearInterpolator()) {
                 step.animations.forEach { animate(findViewById(it.target ?: R.id.cookie)).toBe(it.expectations) }
             }.withEndAction {
                 animationEndListener?.invoke(index, step.tag, step.holdOnPosition==-1337L)
