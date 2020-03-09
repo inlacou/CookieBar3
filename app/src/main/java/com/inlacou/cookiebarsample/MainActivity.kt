@@ -44,7 +44,7 @@ class MainActivity : AppCompatActivity() {
 					.setIconAnimation(R.animator.iconspin)
 					.setTitleColor(R.color.fancyTitle)
 					.setMessageColor(R.color.fancyMessage)
-					.setSteps(AnimationRoutes.showFromBottom)
+					.setSteps(AnimationRoutes.showFromBottom2)
 					.setCookiePosition(BOTTOM)
 					.show()
 		}
