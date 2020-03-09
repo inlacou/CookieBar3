@@ -88,7 +88,7 @@ internal class Cookie @JvmOverloads constructor(context: Context, attrs: Attribu
         //Icon
         if (params.iconResId != 0) {
             ivIcon?.visibility = View.VISIBLE
-            ivIcon?.setBackgroundResource(params.iconResId)
+            ivIcon?.setImageResource(params.iconResId)
             params.iconAnimator?.apply {
                 setTarget(ivIcon)
                 start()
