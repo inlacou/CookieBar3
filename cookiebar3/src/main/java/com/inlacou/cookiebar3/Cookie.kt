@@ -21,34 +21,16 @@ import com.github.florent37.kotlin.pleaseanimate.PleaseAnim
 import com.github.florent37.kotlin.pleaseanimate.please
 
 internal class Cookie @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0)
-    : LinearLayout(context, attrs, defStyleAttr), View.OnTouchListener {
+    : LinearLayout(context, attrs, defStyleAttr) {
     
     private var layoutCookie: ViewGroup? = null
     private var tvTitle: TextView? = null
     private var tvMessage: TextView? = null
     private var ivIcon: ImageView? = null
     var layoutGravity = Gravity.BOTTOM
-    private var initialDragX: Float = 0.toFloat()
-    private var dismissOffsetThreshold: Float = 0.toFloat()
-    private var viewWidth: Float = 0.toFloat()
-    private var swipedOut: Boolean = false
-    private var isAutoDismissEnabled: Boolean = false
-    private var isSwipeable: Boolean = false
     private var animationEndListener: ((animationIndex: Int, tag: String?, hold: Boolean) -> Unit)? = null
     private var dismissListener: (() -> Unit)? = null
-    
     private var steps: MutableList<CookieAnimationStep> = mutableListOf()
-    
-    /**
-     * Used for swipe out animation
-     */
-    private val destroyListener: Animator.AnimatorListener
-        get() = object : Animator.AnimatorListener {
-            override fun onAnimationStart(animation: Animator) {}
-            override fun onAnimationEnd(animation: Animator) { removeFromParent() }
-            override fun onAnimationCancel(animation: Animator) {}
-            override fun onAnimationRepeat(animation: Animator) {}
-        }
     
     private fun initViews(@LayoutRes rootView: Int, viewInitializer: CookieBar.CustomViewInitializer?) {
         if (rootView != 0) {
@@ -64,21 +46,12 @@ internal class Cookie @JvmOverloads constructor(context: Context, attrs: Attribu
         tvTitle = findViewById(R.id.tv_title)
         tvMessage = findViewById(R.id.tv_message)
         ivIcon = findViewById(R.id.iv_icon)
-        
-        setListeners()
-    }
-    
-    @SuppressLint("ClickableViewAccessibility")
-    private fun setListeners() {
-        layoutCookie?.setOnTouchListener(this)
     }
     
     fun setParams(params: CookieBar.Params) {
         initViews(params.customViewResource, params.viewInitializer)
         
         layoutGravity = params.cookiePosition
-        isSwipeable = params.enableSwipeToDismiss
-        isAutoDismissEnabled = params.enableAutoDismiss
         animationEndListener = params.animationEndListener
         dismissListener = params.dismissListener
         
@@ -149,9 +122,6 @@ internal class Cookie @JvmOverloads constructor(context: Context, attrs: Attribu
     }
     
     override fun onLayout(changed: Boolean, l: Int, t: Int, r: Int, b: Int) {
-        viewWidth = width.toFloat()
-        dismissOffsetThreshold = viewWidth / 3
-        
         if (layoutGravity == Gravity.TOP) {
             super.onLayout(changed, l, 0, r, layoutCookie?.measuredHeight ?: 0)
         } else {
@@ -162,11 +132,6 @@ internal class Cookie @JvmOverloads constructor(context: Context, attrs: Attribu
     @JvmOverloads
     fun dismiss(listener: (() -> Unit)? = null) {
         println("Cookie | dismiss: $listener")
-        if (swipedOut) {
-            removeFromParent()
-            println("Cookie | dismiss: return")
-            return
-        }
     
         listener?.invoke()
         visibility = View.GONE
@@ -193,54 +158,4 @@ internal class Cookie @JvmOverloads constructor(context: Context, attrs: Attribu
         }, 200)
     }
     
-    override fun onTouch(view: View, motionEvent: MotionEvent): Boolean {
-        if (!isSwipeable) {
-            return true
-        }
-        
-        when (motionEvent.action) {
-            MotionEvent.ACTION_DOWN -> {
-                initialDragX = motionEvent.rawX
-                return true
-            }
-            
-            MotionEvent.ACTION_UP -> {
-                if (!swipedOut) {
-                    view.animate()
-                            .x(0f)
-                            .alpha(1f)
-                            .setDuration(200)
-                            .start()
-                }
-                return true
-            }
-            
-            MotionEvent.ACTION_MOVE -> {
-                if (swipedOut) {
-                    return true
-                }
-                var offset = motionEvent.rawX - initialDragX
-                var alpha = 1 - Math.abs(offset / viewWidth)
-                var duration: Long = 0
-                
-                if (Math.abs(offset) > dismissOffsetThreshold) {
-                    offset = viewWidth * Math.signum(offset)
-                    alpha = 0f
-                    duration = 200
-                    swipedOut = true
-                }
-                
-                view.animate()
-                        .setListener(if (swipedOut) destroyListener else null)
-                        .x(offset)
-                        .alpha(alpha)
-                        .setDuration(duration)
-                        .start()
-                
-                return true
-            }
-            
-            else -> return false
-        }
-    }
 }

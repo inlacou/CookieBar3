@@ -170,16 +170,6 @@ class CookieBar private constructor(private val context: Activity, params: Param
             return this
         }
 
-        fun setEnableAutoDismiss(enableAutoDismiss: Boolean): Builder {
-            params.enableAutoDismiss = enableAutoDismiss
-            return this
-        }
-
-        fun setSwipeToDismiss(enableSwipeToDismiss: Boolean): Builder {
-            params.enableSwipeToDismiss = enableSwipeToDismiss
-            return this
-        }
-
         fun setShownListener(animationEndListener: ((animationIndex: Int, tag: String?, hold: Boolean) -> Unit)): Builder {
             params.animationEndListener = animationEndListener
             return this
@@ -214,8 +204,6 @@ class CookieBar private constructor(private val context: Activity, params: Param
     internal class Params {
         var title: String? = null
         var message: String? = null
-        var enableSwipeToDismiss = true
-        var enableAutoDismiss = true
         var iconResId: Int = 0
         var backgroundColor: Int = 0
         var titleColor: Int = 0
